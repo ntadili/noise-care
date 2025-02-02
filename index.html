@@ -253,46 +253,46 @@
       // Show the loading spinner overlay
       document.getElementById('loader').style.display = 'flex';
 
-      // Optional: Start recording audio (if still needed)
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.start();
-        console.log("Recording started...");
+      // // Optional: Start recording audio (if still needed)
+      // try {
+      //   const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      //   mediaRecorder = new MediaRecorder(stream);
+      //   mediaRecorder.start();
+      //   console.log("Recording started...");
 
-        // Update UI buttons
-        document.getElementById('recordBtn').disabled = true;
-        document.getElementById('stopBtn').disabled = false;
+      //   // Update UI buttons
+      //   document.getElementById('recordBtn').disabled = true;
+      //   document.getElementById('stopBtn').disabled = false;
 
-        // Collect recorded data
-        mediaRecorder.addEventListener("dataavailable", event => {
-          audioChunks.push(event.data);
-        });
+      //   // Collect recorded data
+      //   mediaRecorder.addEventListener("dataavailable", event => {
+      //     audioChunks.push(event.data);
+      //   });
 
-        // When recording stops, process the audio
-        mediaRecorder.addEventListener("stop", async () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-          audioChunks = [];
-          const audioUrl = URL.createObjectURL(audioBlob);
-          document.getElementById('audioPlayback').src = audioUrl;
+      //   // When recording stops, process the audio
+      //   mediaRecorder.addEventListener("stop", async () => {
+      //     const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+      //     audioChunks = [];
+      //     const audioUrl = URL.createObjectURL(audioBlob);
+      //     document.getElementById('audioPlayback').src = audioUrl;
           
-          // Prepare and send the audio file to the backend (if applicable)
-          const formData = new FormData();
-          formData.append('audio', audioBlob, 'recording.wav');
-          try {
-            const response = await fetch('/upload-audio', {
-              method: 'POST',
-              body: formData
-            });
-            const result = await response.json();
-            console.log('Server response:', result);
-          } catch (error) {
-            console.error('Error uploading audio:', error);
-          }
-        });
-      } catch (error) {
-        console.error("Error accessing microphone:", error);
-      }
+      //     // Prepare and send the audio file to the backend (if applicable)
+      //     const formData = new FormData();
+      //     formData.append('audio', audioBlob, 'recording.wav');
+      //     try {
+      //       const response = await fetch('/upload-audio', {
+      //         method: 'POST',
+      //         body: formData
+      //       });
+      //       const result = await response.json();
+      //       console.log('Server response:', result);
+      //     } catch (error) {
+      //       console.error('Error uploading audio:', error);
+      //     }
+      //   });
+      // } catch (error) {
+      //   console.error("Error accessing microphone:", error);
+      // }
       
       // After 4 seconds, redirect to another page (e.g., response.html)
       setTimeout(() => {
