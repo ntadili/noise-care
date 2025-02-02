@@ -10,37 +10,56 @@
       padding: 0;
       box-sizing: border-box;
     }
+    
+    /* Body & Overall App Styles */
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
       background-color: #f5f5f5;
-      padding: 10px;
       color: #333;
+      padding: 20px;
     }
+    
+    /* App Container for better organization & spacing */
+    .app-container {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
     h1 {
       text-align: center;
       margin-bottom: 20px;
       font-size: 1.8rem;
+      color: #444;
     }
-    /* Container common styling for responsiveness */
-    .first-container,
-    .second-container,
-    .third-container {
-      width: 100%;
-      max-width: 500px;
-      margin: 10px auto;
-      padding: 15px;
-      border-radius: 20px;
+    
+    /* Common Container Styling */
+    .container {
       background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-    /* FIRST CONTAINER: User Info & Controls */
+    
+    /* Color variations for specific containers */
     .first-container {
       background-color: rgb(194, 162, 247);
     }
+    
+    .second-container,
+    .third-container {
+      background-color: rgb(183, 255, 180);
+    }
+    
+    /* First Container: User Information & Controls */
     .upper-part {
       display: flex;
       align-items: center;
     }
+    
     .upper-part img {
       width: 70px;
       height: 70px;
@@ -49,17 +68,21 @@
       margin-right: 15px;
       background-color: aquamarine;
     }
+    
     .upper-part h2 {
       font-size: 1.4rem;
       margin-bottom: 5px;
     }
+    
     .upper-part div {
       font-size: 1rem;
     }
+    
     .lower-part {
       margin-top: 15px;
       text-align: center;
     }
+    
     .lower-part button {
       padding: 10px 15px;
       font-size: 1rem;
@@ -71,44 +94,43 @@
       color: white;
       transition: background-color 0.3s;
     }
+    
     .lower-part button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
+    
     .lower-part audio {
       width: 100%;
       margin-top: 15px;
+      outline: none;
     }
+    
     hr {
       border: none;
       border-top: 1px solid rgba(0, 0, 0, 0.2);
       margin: 15px 0;
     }
-    /* SECOND CONTAINER: Last Cry */
-    .second-container {
-      background-color: rgb(183, 255, 180);
-    }
-    .second-container h3 {
-      margin-bottom: 10px;
+    
+    /* Second Container: Last Cry */
+    .second-container h3,
+    /* Third Container: Hours Slept */
+    .third-container h3 {
       font-size: 1.2rem;
       text-align: center;
+      margin-bottom: 10px;
     }
+    
     .second-container > div {
       background-color: #fff;
       border-radius: 20px;
       padding: 15px;
       font-size: 1rem;
       text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    /* THIRD CONTAINER: Hours Slept */
-    .third-container {
-      background-color: rgb(183, 255, 180);
-    }
-    .third-container h3 {
-      margin-bottom: 10px;
-      font-size: 1.2rem;
-      text-align: center;
-    }
+    
+    /* Third Container inner styling */
     .third-container > div {
       display: flex;
       justify-content: center;
@@ -118,71 +140,83 @@
       padding: 15px;
       font-size: 1rem;
       height: 80px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    /* Media Query: For screens up to 600px */
+    
+    /* Media Query for Smaller Screens (up to 600px) */
     @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      
       h1 {
         font-size: 1.5rem;
       }
+      
       .upper-part img {
         width: 60px;
         height: 60px;
       }
+      
       .upper-part h2 {
         font-size: 1.2rem;
       }
+      
       .upper-part div {
         font-size: 0.9rem;
       }
+      
       .lower-part button {
         font-size: 0.9rem;
         padding: 8px 12px;
       }
+      
       .second-container h3,
       .third-container h3 {
         font-size: 1rem;
       }
+      
       .second-container > div,
       .third-container > div {
         font-size: 0.9rem;
         padding: 12px;
       }
     }
-	</style>
+  </style>
 </head>
 <body>
-
-	<h1>Welcome back!</h1>
-
-	<!-- User Information & Controls -->
-	<div class="first-container">
-	  <div class="upper-part">
-		<img src="./public/images/pexels-alexey-makhinko-330734-929436.jpg" alt="User Profile">
-		<div>
-		  <h2>User Name</h2>
-		  <div>Baby's Status</div>
-		</div>
-	  </div>
-	  <hr>
-	  <div class="lower-part">
-		<button id="recordBtn">Activate</button>
-		<button id="stopBtn" disabled>Stop</button>
-		<audio id="audioPlayback" controls></audio>
-	  </div>		
-	</div>
-  
-	<!-- Last Cry -->
-	<div class="second-container">
-	  <h3>Last cry</h3>
-	  <div>No cries recorded yet</div>
-	</div>
-  
-	<!-- Hours Slept -->
-	<div class="third-container">
-	  <h3>Hours slept</h3>
-	  <div>Make your first entry</div>
-	</div>
-
+  <h1>Welcome back!</h1>
+  <div class="app-container">
+    <!-- User Information & Controls -->
+    <div class="container first-container">
+      <div class="upper-part">
+        <img src="./public/images/pexels-alexey-makhinko-330734-929436.jpg" alt="User Profile">
+        <div>
+          <h2>User Name</h2>
+          <div>Baby's Status</div>
+        </div>
+      </div>
+      <hr>
+      <div class="lower-part">
+        <button id="recordBtn">Activate</button>
+        <button id="stopBtn" disabled>Stop</button>
+        <audio id="audioPlayback" controls></audio>
+      </div>
+    </div>
+    
+    <!-- Last Cry -->
+    <div class="container second-container">
+      <h3>Last cry</h3>
+      <div>No cries recorded yet</div>
+    </div>
+    
+    <!-- Hours Slept -->
+    <div class="container third-container">
+      <h3>Hours slept</h3>
+      <div>Make your first entry</div>
+    </div>
+  </div>
+  <a href="./response.html">nn</a>
   <script>
     let mediaRecorder;
     let audioChunks = [];
