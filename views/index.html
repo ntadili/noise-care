@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Noise Care</title>
+	<style>
+    /* Global Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #f5f5f5;
+      padding: 10px;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+    }
+    /* Container common styling for responsiveness */
+    .first-container,
+    .second-container,
+    .third-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 10px auto;
+      padding: 15px;
+      border-radius: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    /* FIRST CONTAINER: User Info & Controls */
+    .first-container {
+      background-color: rgb(194, 162, 247);
+    }
+    .upper-part {
+      display: flex;
+      align-items: center;
+    }
+    .upper-part img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-right: 15px;
+      background-color: aquamarine;
+    }
+    .upper-part h2 {
+      font-size: 1.4rem;
+      margin-bottom: 5px;
+    }
+    .upper-part div {
+      font-size: 1rem;
+    }
+    .lower-part {
+      margin-top: 15px;
+      text-align: center;
+    }
+    .lower-part button {
+      padding: 10px 15px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #6a5acd;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    .lower-part button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .lower-part audio {
+      width: 100%;
+      margin-top: 15px;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid rgba(0, 0, 0, 0.2);
+      margin: 15px 0;
+    }
+    /* SECOND CONTAINER: Last Cry */
+    .second-container {
+      background-color: rgb(183, 255, 180);
+    }
+    .second-container h3 {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    .second-container > div {
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 15px;
+      font-size: 1rem;
+      text-align: center;
+    }
+    /* THIRD CONTAINER: Hours Slept */
+    .third-container {
+      background-color: rgb(183, 255, 180);
+    }
+    .third-container h3 {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+    .third-container > div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 15px;
+      font-size: 1rem;
+      height: 80px;
+    }
+    /* Media Query: For screens up to 600px */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      .upper-part img {
+        width: 60px;
+        height: 60px;
+      }
+      .upper-part h2 {
+        font-size: 1.2rem;
+      }
+      .upper-part div {
+        font-size: 0.9rem;
+      }
+      .lower-part button {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
+      .second-container h3,
+      .third-container h3 {
+        font-size: 1rem;
+      }
+      .second-container > div,
+      .third-container > div {
+        font-size: 0.9rem;
+        padding: 12px;
+      }
+    }
+	</style>
+</head>
+<body>
+
+	<h1>Welcome back!</h1>
+
+	<!-- User Information & Controls -->
+	<div class="first-container">
+	  <div class="upper-part">
+		<img src="../public/images/pexels-alexey-makhinko-330734-929436.jpg" alt="User Profile">
+		<div>
+		  <h2>User Name</h2>
+		  <div>Baby's Status</div>
+		</div>
+	  </div>
+	  <hr>
+	  <div class="lower-part">
+		<button id="recordBtn">Activate</button>
+		<button id="stopBtn" disabled>Stop</button>
+		<audio id="audioPlayback" controls></audio>
+	  </div>		
+	</div>
+  
+	<!-- Last Cry -->
+	<div class="second-container">
+	  <h3>Last cry</h3>
+	  <div>No cries recorded yet</div>
+	</div>
+  
+	<!-- Hours Slept -->
+	<div class="third-container">
+	  <h3>Hours slept</h3>
+	  <div>Make your first entry</div>
+	</div>
+
+  <script>
+    let mediaRecorder;
+    let audioChunks = [];
+
+    // When the Record button is clicked
+    document.getElementById('recordBtn').addEventListener('click', async () => {
+      // Request access to the microphone
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      
+      // Start recording
+      mediaRecorder.start();
+      console.log("Recording started...");
+      
+      // Update UI buttons
+      document.getElementById('recordBtn').disabled = true;
+      document.getElementById('stopBtn').disabled = false;
+
+      // Collect data as it becomes available
+      mediaRecorder.addEventListener("dataavailable", event => {
+        audioChunks.push(event.data);
+      });
+
+      // When recording stops, process the audio
+      mediaRecorder.addEventListener("stop", async () => {
+        // Combine the recorded chunks into a Blob
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        // Reset the chunk array for the next recording
+        audioChunks = [];
+
+        // Create a URL for the audio Blob to allow playback in the browser
+        const audioUrl = URL.createObjectURL(audioBlob);
+        document.getElementById('audioPlayback').src = audioUrl;
+        
+        // Prepare the audio file to be sent to the backend using FormData
+        const formData = new FormData();
+        formData.append('audio', audioBlob, 'recording.wav');
+
+        try {
+          // Send a POST request to the backend endpoint '/upload-audio'
+          const response = await fetch('/upload-audio', {
+            method: 'POST',
+            body: formData
+          });
+          const result = await response.json();
+          console.log('Server response:', result);
+        } catch (error) {
+          console.error('Error uploading audio:', error);
+        }
+      });
+    });
+
+    // When the Stop button is clicked
+    document.getElementById('stopBtn').addEventListener('click', () => {
+      if (mediaRecorder) {
+        mediaRecorder.stop();
+        console.log("Recording stopped.");
+        document.getElementById('recordBtn').disabled = false;
+        document.getElementById('stopBtn').disabled = true;
+      }
+    });
+  </script>
+</body>
+</html>
