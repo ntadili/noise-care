@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Ensures proper scaling and safe area usage on iPhones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Noise Care</title>
-	<style>
+  <style>
     /* Ensure the html and body fill the viewport */
     html, body {
       margin: 0;
@@ -22,29 +24,32 @@
         Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
       background-color: #f5f5f5;
       color: #333;
-      /* Use safe-area insets to ensure content isn’t hidden by the notch or rounded corners */
       padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      /* Optional: remove scrollbars if you want a fixed app view */
+      overflow: hidden;
     }
     
     /* App container that fills the screen and centers content */
     .app-container {
       max-width: 500px;
+      width: 100%;
+      height: 100vh;
       margin: 0 auto;
-      min-height: 100%;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       gap: 20px;
       padding: 20px;
     }
     
     h1 {
       text-align: center;
-      margin-bottom: 20px;
       font-size: 1.8rem;
       color: #444;
+      margin-bottom: 20px;
     }
     
-    /* Common container styling */
+    /* Common container styling for sections */
     .container {
       background-color: #fff;
       border-radius: 20px;
@@ -56,7 +61,6 @@
     .first-container {
       background-color: rgb(194, 162, 247);
     }
-    
     .second-container,
     .third-container {
       background-color: rgb(183, 255, 180);
@@ -67,7 +71,6 @@
       display: flex;
       align-items: center;
     }
-    
     .upper-part img {
       width: 70px;
       height: 70px;
@@ -76,12 +79,10 @@
       margin-right: 15px;
       background-color: aquamarine;
     }
-    
     .upper-part h2 {
       font-size: 1.4rem;
       margin-bottom: 5px;
     }
-    
     .upper-part div {
       font-size: 1rem;
     }
@@ -90,7 +91,6 @@
       margin-top: 15px;
       text-align: center;
     }
-    
     .lower-part button {
       padding: 10px 15px;
       font-size: 1rem;
@@ -102,18 +102,15 @@
       color: white;
       transition: background-color 0.3s;
     }
-    
     .lower-part button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
-    
     .lower-part audio {
       width: 100%;
       margin-top: 15px;
       outline: none;
     }
-    
     hr {
       border: none;
       border-top: 1px solid rgba(0, 0, 0, 0.2);
@@ -127,7 +124,6 @@
       text-align: center;
       margin-bottom: 10px;
     }
-    
     .second-container > div {
       background-color: #fff;
       border-radius: 20px;
@@ -136,7 +132,6 @@
       text-align: center;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
     .third-container > div {
       display: flex;
       justify-content: center;
@@ -149,40 +144,58 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
+    /* Loader Overlay for spinner */
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
     /* Responsive adjustments for screens up to 600px */
     @media (max-width: 600px) {
       body {
-        /* Adjust horizontal padding on smaller devices */
         padding: env(safe-area-inset-top) 10px env(safe-area-inset-bottom) 10px;
       }
-      
       h1 {
         font-size: 1.5rem;
       }
-      
       .upper-part img {
         width: 60px;
         height: 60px;
       }
-      
       .upper-part h2 {
         font-size: 1.2rem;
       }
-      
       .upper-part div {
         font-size: 0.9rem;
       }
-      
       .lower-part button {
         font-size: 0.9rem;
         padding: 8px 12px;
       }
-      
       .second-container h3,
       .third-container h3 {
         font-size: 1rem;
       }
-      
       .second-container > div,
       .third-container > div {
         font-size: 0.9rem;
@@ -192,8 +205,10 @@
   </style>
 </head>
 <body>
-  <h1>Welcome back!</h1>
+  <!-- App Container wrapping all content for full-screen centering -->
   <div class="app-container">
+    <h1>Welcome back!</h1>
+    
     <!-- User Information & Controls -->
     <div class="container first-container">
       <div class="upper-part">
@@ -223,57 +238,66 @@
       <div>Make your first entry</div>
     </div>
   </div>
-  <a href="./response.html">nn</a>
+  
+  <!-- Loader overlay (hidden by default) -->
+  <div class="loader-overlay" id="loader" style="display: none;">
+    <div class="loader"></div>
+  </div>
+  
   <script>
     let mediaRecorder;
     let audioChunks = [];
 
-    // When the Record button is clicked
+    // When the Activate button is clicked
     document.getElementById('recordBtn').addEventListener('click', async () => {
-      // Request access to the microphone
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder = new MediaRecorder(stream);
+      // Show the loading spinner overlay
+      document.getElementById('loader').style.display = 'flex';
+
+      // Optional: Start recording audio (if still needed)
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.start();
+        console.log("Recording started...");
+
+        // Update UI buttons
+        document.getElementById('recordBtn').disabled = true;
+        document.getElementById('stopBtn').disabled = false;
+
+        // Collect recorded data
+        mediaRecorder.addEventListener("dataavailable", event => {
+          audioChunks.push(event.data);
+        });
+
+        // When recording stops, process the audio
+        mediaRecorder.addEventListener("stop", async () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+          audioChunks = [];
+          const audioUrl = URL.createObjectURL(audioBlob);
+          document.getElementById('audioPlayback').src = audioUrl;
+          
+          // Prepare and send the audio file to the backend (if applicable)
+          const formData = new FormData();
+          formData.append('audio', audioBlob, 'recording.wav');
+          try {
+            const response = await fetch('/upload-audio', {
+              method: 'POST',
+              body: formData
+            });
+            const result = await response.json();
+            console.log('Server response:', result);
+          } catch (error) {
+            console.error('Error uploading audio:', error);
+          }
+        });
+      } catch (error) {
+        console.error("Error accessing microphone:", error);
+      }
       
-      // Start recording
-      mediaRecorder.start();
-      console.log("Recording started...");
-      
-      // Update UI buttons
-      document.getElementById('recordBtn').disabled = true;
-      document.getElementById('stopBtn').disabled = false;
-
-      // Collect data as it becomes available
-      mediaRecorder.addEventListener("dataavailable", event => {
-        audioChunks.push(event.data);
-      });
-
-      // When recording stops, process the audio
-      mediaRecorder.addEventListener("stop", async () => {
-        // Combine the recorded chunks into a Blob
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        // Reset the chunk array for the next recording
-        audioChunks = [];
-
-        // Create a URL for the audio Blob to allow playback in the browser
-        const audioUrl = URL.createObjectURL(audioBlob);
-        document.getElementById('audioPlayback').src = audioUrl;
-        
-        // Prepare the audio file to be sent to the backend using FormData
-        const formData = new FormData();
-        formData.append('audio', audioBlob, 'recording.wav');
-
-        try {
-          // Send a POST request to the backend endpoint '/upload-audio'
-          const response = await fetch('/upload-audio', {
-            method: 'POST',
-            body: formData
-          });
-          const result = await response.json();
-          console.log('Server response:', result);
-        } catch (error) {
-          console.error('Error uploading audio:', error);
-        }
-      });
+      // After 4 seconds, redirect to another page (e.g., response.html)
+      setTimeout(() => {
+        window.location.href = './response.html';
+      }, 4000);
     });
 
     // When the Stop button is clicked
