@@ -42,6 +42,10 @@
       padding: 20px;
     }
     
+    .logo{
+      width: 70px;
+      height:  50px;
+    }
     h1 {
       text-align: center;
       font-size: 1.8rem;
@@ -207,6 +211,7 @@
 <body>
   <!-- App Container wrapping all content for full-screen centering -->
   <div class="app-container">
+    <img class="logo" src="./public/images/logo.png" alt="Logo">
     <h1>Welcome back!</h1>
     
     <!-- User Information & Controls -->
@@ -297,7 +302,7 @@
       // After 4 seconds, redirect to another page (e.g., response.html)
       setTimeout(() => {
         window.location.href = './response.html';
-      }, 4000);
+      }, 7000);
     });
 
     // When the Stop button is clicked
